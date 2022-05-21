@@ -3,28 +3,36 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/сreate-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
+  constructor(private readonly tasksService: TasksService) {}
+
   @Get()
   getAll() {
-    return 'getAll';
+    return this.tasksService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): string {
-    return 'getOne' + id;
+  getOne(@Param('id') id: string) {
+    return this.tasksService.getById(id);
   }
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto): string {
-    return `Title: ${createTaskDto.title} priority: ${createTaskDto.priority} duration: ${createTaskDto.duration}`;
+  @HttpCode(HttpStatus.CREATED)
+  @Header('Cache-Control', 'none')
+  create(@Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create(createTaskDto);
   }
 
   @Delete(':id')
