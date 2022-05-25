@@ -9,8 +9,13 @@
 ## Features:
 
 - creating a todo-list
+- delete the list
+- add task
+- add color of task
+- delete task
+- edit task
 - sort tasks by priority
-- sort tasks by duration
+- sort tasks by duration 
 
 ## Running the app
 
