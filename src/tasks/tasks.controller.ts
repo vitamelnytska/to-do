@@ -9,17 +9,19 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/сreate-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TasksService } from './tasks.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  getAll() {
+  async getAll() {
     return this.tasksService.getAll();
   }
 
@@ -28,6 +30,7 @@ export class TasksController {
     return this.tasksService.getById(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Header('Cache-Control', 'none')
@@ -35,11 +38,13 @@ export class TasksController {
     return this.tasksService.create(createTaskDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   remove(@Param('id') id: string) {
     return 'Remove' + id;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   update(@Body() updateTaskDto: UpdateTaskDto, @Param('id') id: string) {
     return 'Update ' + id;
