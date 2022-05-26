@@ -9,12 +9,17 @@
 ## Features:
 
 - creating a todo-list
+- delete the list
+- add task
+- add color of task
+- delete task
+- edit task
 - sort tasks by priority
-- sort tasks by duration
+- sort tasks by duration 
 
 ## Running the app
 
-```bash
+```
 # development
 $ npm run start
 
@@ -25,14 +30,3 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
