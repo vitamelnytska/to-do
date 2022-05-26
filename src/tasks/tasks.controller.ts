@@ -30,7 +30,6 @@ export class TasksController {
     return this.tasksService.getById(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Header('Cache-Control', 'none')
@@ -38,13 +37,11 @@ export class TasksController {
     return this.tasksService.create(createTaskDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   remove(@Param('id') id: string) {
     return 'Remove' + id;
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   update(@Body() updateTaskDto: UpdateTaskDto, @Param('id') id: string) {
     return 'Update ' + id;
