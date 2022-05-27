@@ -13,6 +13,8 @@
 - add task
 - add color of task
 - delete task
+- edit status of task
+- when status is "done" tha task will disappear
 - edit task
 - sort tasks by priority
 - sort tasks by duration 
