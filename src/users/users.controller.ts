@@ -12,36 +12,35 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {usersMock} from "../../server/user-mock";
+import {User} from "./schemas/users.schema";
+
+let usersData = usersMock;
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+
   @Get()
-  getAll() {
-    return this.usersService.getAll();
+  async getAll(): Promise<CreateUserDto[]> {
+    return usersData;
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string) {
+  getOne(@Param('id') id: string): Promise<User> {
     return this.usersService.getById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Header('Cache-Control', 'none')
-  create(@Body() createUsersDto: CreateUserDto) {
-    return this.usersService.create(createUsersDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return 'Remove' + id;
-  }
-
-  @Put(':id')
-  update(@Body() updateUserDto: UpdateUserDto, @Param('id') id: string) {
-    return 'Update ' + id;
+  createUser(@Body() createUser: CreateUserDto): CreateUserDto {
+    const newUser: CreateUserDto = {
+      id: (usersData.length + 1).toString(),
+      ...createUser,
+    };
+    usersData = [...usersData, newUser];
+    return newUser;
   }
 }
