@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTaskDto } from './dto/сreate-task.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Task, TaskDocument } from './schemas/tasks.schema';
-import { Model } from 'mongoose';
-import { UpdateTaskDto } from './dto/update-task.dto';
+import {Injectable} from '@nestjs/common';
+import {CreateTaskDto} from './dto/сreate-task.dto';
+import {InjectModel} from '@nestjs/mongoose';
+import {Task, TaskDocument} from './schemas/tasks.schema';
+import {Model} from 'mongoose';
 
 @Injectable()
 export class TasksService {
@@ -15,17 +14,22 @@ export class TasksService {
   async getById(id: string): Promise<Task> {
     return this.taskModel.findById(id);
   }
-
+  //TODO fix
   async create(taskDto: CreateTaskDto): Promise<Task> {
-    const newTask = new this.taskModel(taskDto);
-    return newTask.save();
+    return await this.taskModel.create(taskDto);
   }
 
   async remove(id: string): Promise<Task> {
-    return this.taskModel.findByIdAndRemove();
+    return this.taskModel.findByIdAndRemove(id);
   }
 
-  async update(id: string, taskDto: UpdateTaskDto): Promise<Task> {
-    return this.taskModel.findByIdAndUpdate(id, UpdateTaskDto, { new: true });
+  async update(id: string, taskDto: CreateTaskDto): Promise<Task> {
+    const res = await this.taskModel.findByIdAndUpdate(
+      id,
+      { ...taskDto },
+      { new: true },
+    );
+    await res.save();
+    return res;
   }
 }

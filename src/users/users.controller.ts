@@ -12,15 +12,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import {usersMock} from "../../server/user-mock";
-import {User} from "./schemas/users.schema";
+import { usersMock } from '../../server/user-mock';
+import { User } from './schemas/users.schema';
 
 let usersData = usersMock;
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
 
   @Get()
   async getAll(): Promise<CreateUserDto[]> {
