@@ -14,7 +14,7 @@ export class TasksService {
   async getById(id: string): Promise<Task> {
     return this.taskModel.findById(id);
   }
-  //TODO fix
+
   async create(taskDto: CreateTaskDto): Promise<Task> {
     return await this.taskModel.create(taskDto);
   }

@@ -28,7 +28,7 @@ export class TasksController {
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Promise<Task> {
+  getOne(@Param('id') id: string) {
     return this.tasksService.getById(id);
   }
 
@@ -40,8 +40,9 @@ export class TasksController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<Task> {
-    return this.tasksService.remove(id);
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id') id: string){
+    this.tasksService.remove(id);
   }
 
   @Put(':id')
