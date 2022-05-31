@@ -1,8 +1,8 @@
-import {Injectable} from '@nestjs/common';
-import {CreateTaskDto} from './dto/сreate-task.dto';
-import {InjectModel} from '@nestjs/mongoose';
-import {Task, TaskDocument} from './schemas/tasks.schema';
-import {Model} from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { CreateTaskDto } from './dto/сreate-task.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Task, TaskDocument } from './schemas/tasks.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class TasksService {
