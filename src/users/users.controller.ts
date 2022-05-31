@@ -12,10 +12,8 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { usersMock } from '../../server/user-mock';
 import { User } from './schemas/users.schema';
-
-let usersData = usersMock;
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -23,23 +21,32 @@ export class UsersController {
 
   @Get()
   async getAll(): Promise<CreateUserDto[]> {
-    return usersData;
+    return this.usersService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Promise<User> {
+  getOne(@Param('id') id: string) {
     return this.usersService.getById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Header('Cache-Control', 'none')
-  createUser(@Body() createUser: CreateUserDto): CreateUserDto {
-    const newUser: CreateUserDto = {
-      id: (usersData.length + 1).toString(),
-      ...createUser,
-    };
-    usersData = [...usersData, newUser];
-    return newUser;
+  createUser(@Body() createUser: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUser);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id') id: string) {
+    this.usersService.remove(id);
+  }
+
+  @Put(':id')
+  update(
+    @Body() updateUserDto: UpdateUserDto,
+    @Param('id') id: string,
+  ): Promise<User> {
+    return this.usersService.update(id, updateUserDto);
   }
 }
