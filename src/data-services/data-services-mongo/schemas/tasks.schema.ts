@@ -5,11 +5,32 @@ export type TaskDocument = Task & Document;
 
 @Schema()
 export class Task {
-  @Prop()
+  @Prop({
+    required: true,
+  })
   name: string;
-  @Prop()
+
+  @Prop({
+    required: true,
+  })
+  ownerId: string;
+
+  @Prop({
+    required: true,
+  })
   priority: number;
-  @Prop()
+
+  @Prop({
+    required: true,
+  })
   duration: number;
+
+  @Prop()
+  status?: string;
+
+  @Prop({
+    required: true,
+  })
+  creationDate: Date;
 }
 export const TaskSchema = SchemaFactory.createForClass(Task);
