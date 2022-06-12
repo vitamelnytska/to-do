@@ -9,6 +9,7 @@ import {
 
 export class BaseTaskDto {
   @MinLength(2)
+  @MaxLength(45)
   @IsString()
   @IsNotEmpty()
   name: string;

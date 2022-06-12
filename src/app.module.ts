@@ -21,7 +21,7 @@ import { DataServicesModule } from './data-services/data-services.module';
       limit: 10,
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     AppService,
     {

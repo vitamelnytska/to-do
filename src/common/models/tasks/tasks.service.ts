@@ -27,7 +27,7 @@ export class TasksService {
   async getById(id: string, userId: string) {
     const task = await this.dataServices.tasks.getById(id, userId);
     if (!task) {
-      throw new NotFoundException('No animal with this id!');
+      throw new NotFoundException('No task with this id!');
     }
     return task;
   }
