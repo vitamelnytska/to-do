@@ -7,6 +7,7 @@ import { UsersModule } from './common/models/users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { DataServicesModule } from './data-services/data-services.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DataServicesModule } from './data-services/data-services.module';
       ttl: 60,
       limit: 10,
     }),
+    AuthModule,
   ],
   controllers: [],
   providers: [

@@ -13,14 +13,15 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { Task } from '../../../data-services/data-services-mongo/schemas/tasks.schema';
 import { PaginationPipe } from '../../pipes/pagination/pagination.pipe';
 import { ObjectIdValidationPipe } from '../../pipes/object-id/objectid-validation.pipe';
-import { BaseTaskDto, TaskDto } from './dto';
+import { BaseTaskDto } from './dto';
 import { PaginationDto } from '../../pipes/pagination/dto/pagination.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 const mockUserId = '62911964a7afaf9b1059a2ff'; // get id from auth
 
+@ApiTags('Tasks')
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}

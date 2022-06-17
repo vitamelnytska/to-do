@@ -14,16 +14,23 @@ import { AddRoleDto, BanUserDto, BaseUserDto } from './dto';
 import { PaginationPipe } from '../../pipes/pagination/pagination.pipe';
 import { PaginationDto } from '../../pipes/pagination/dto/pagination.dto';
 import { ObjectIdValidationPipe } from '../../pipes/object-id/objectid-validation.pipe';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from '../../../data-services/data-services-mongo/schemas/users.schema';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Creation User' })
+  @ApiResponse({ status: 200, type: User })
   @Post()
   create(@Body() createUserDto: BaseUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, type: [User] })
   @Get()
   @UsePipes(new PaginationPipe(0, 10))
   getAll(@Query() pagination: PaginationDto) {
