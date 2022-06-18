@@ -7,6 +7,7 @@ import {
   BaseUserDto,
   UserDto,
 } from '../../../common/models/users/dto';
+import { UpdateUserDto } from '../../../common/models/users/dto/update-user.dto';
 
 export class UserRepositoryMongo implements IUserRepository {
   private _repository: Model<UserDocument>;
@@ -35,26 +36,31 @@ export class UserRepositoryMongo implements IUserRepository {
     return this._repository.findByIdAndRemove(id).exec();
   }
 
-  update(id: string, dto: BaseUserDto): Promise<UserDto | null | undefined> {
+  update(id: string, dto: UpdateUserDto): Promise<UserDto | null | undefined> {
     return this._repository.findByIdAndUpdate(id, dto, { new: true }).exec();
   }
 
-  async addRole(id: string, addRoleDto: AddRoleDto) {
-    const user = await this.getById(id);
-    if (!user) {
-      return Promise.resolve(null);
-    }
-    if (user.roles.indexOf(addRoleDto.role) === -1) {
-      return this._repository.findByIdAndUpdate(
-        id,
-        { $push: { roles: addRoleDto.role } },
-        { new: true },
-      );
-    }
-    return Promise.resolve(user);
+  async updatePassword(
+    id: string,
+    password: string,
+  ): Promise<UserDto | null | undefined> {
+    return this._repository
+      .findByIdAndUpdate(id, { password: password }, { new: true })
+      .exec();
   }
 
-  ban(id: string, banUserDto: BanUserDto) {
+  async addRole(
+    id: string,
+    addRoleDto: AddRoleDto,
+  ): Promise<UserDto | null | undefined> {
+    return this._repository.findByIdAndUpdate(
+      id,
+      { $addToSet: { roles: addRoleDto.role } },
+      { new: true },
+    );
+  }
+
+  ban(id: string, banUserDto: BanUserDto): Promise<UserDto | null | undefined> {
     return this._repository
       .findByIdAndUpdate(id, { banned: true, ...banUserDto }, { new: true })
       .exec();

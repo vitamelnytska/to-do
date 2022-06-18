@@ -25,6 +25,12 @@ export class User {
   })
   email: string;
 
+  @ApiProperty({ example: '12345678', description: 'password' })
+  @Prop({
+    required: true,
+  })
+  password: string;
+
   @ApiProperty({ example: '22/05/09', description: 'email' })
   @Prop({
     required: true,

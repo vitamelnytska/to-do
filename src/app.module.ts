@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
     TasksModule,
     UsersModule,
     DataServicesModule,
+    AuthModule,
     ConfigModule.forRoot({
       envFilePath: 'src/.env',
     }),
@@ -21,7 +22,6 @@ import { AuthModule } from './auth/auth.module';
       ttl: 60,
       limit: 10,
     }),
-    AuthModule,
   ],
   controllers: [],
   providers: [

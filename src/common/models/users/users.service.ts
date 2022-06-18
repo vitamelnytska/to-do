@@ -1,16 +1,26 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AddRoleDto, BanUserDto, BaseUserDto, UserDto } from './dto';
 import { IDataServices } from '../../../data-services/interfaces/idata-services';
 import { RoleEnum } from './role.enum';
 import { PaginationDto } from '../../pipes/pagination/dto/pagination.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UpdateOthersPassword } from './dto/update-others-password.dto';
+import { TokenService } from '../../../auth/services/token.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(private dataServices: IDataServices) {}
+  constructor(
+    private dataServices: IDataServices,
+    private tokenService: TokenService,
+  ) {}
 
   async getAll(pagination: PaginationDto) {
     const users = await this.dataServices.users.getAll(
@@ -24,8 +34,15 @@ export class UsersService {
   }
 
   async create(createUserDto: BaseUserDto) {
+    const user = await this.dataServices.users.getByEmail(createUserDto.email);
+    if (user) {
+      throw new BadRequestException('This email is already registered');
+    }
+    const hashedPassword = await this.hashPassword(createUserDto.password);
+
     const newUser: UserDto = {
       ...createUserDto,
+      password: hashedPassword,
       creationDate: new Date(),
       banned: false,
       roles: [RoleEnum.User],
@@ -53,7 +70,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: BaseUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const savedUser = await this.dataServices.users.update(id, updateUserDto);
     if (!savedUser) {
       throw new InternalServerErrorException();
@@ -66,6 +83,7 @@ export class UsersService {
     if (!removedUser) {
       throw new NotFoundException('No user with this id to remove!');
     }
+    await this.tokenService.removeToken(id);
     return removedUser;
   }
 
@@ -83,5 +101,37 @@ export class UsersService {
       throw new NotFoundException('No user with this id to ban!');
     }
     return bannedUser;
+  }
+
+  async changePassword(userId: string, updatePasswordDto: UpdatePasswordDto) {
+    const user = await this.getById(userId);
+    const compareResult = await bcrypt.compare(
+      updatePasswordDto.oldPassword,
+      user.password,
+    );
+    if (!compareResult) {
+      throw new BadRequestException('Old password missmatched');
+    }
+    await this.tokenService.removeToken(userId);
+    return this.updatePassword(userId, updatePasswordDto.newPassword);
+  }
+
+  async changeOthersPassword(updatePasswordDto: UpdateOthersPassword) {
+    const user = await this.getByEmail(updatePasswordDto.email);
+
+    if (user.roles.includes(RoleEnum.Admin)) {
+      throw new UnauthorizedException('Only admin can change own password');
+    }
+    await this.tokenService.removeToken(user._id);
+    return this.updatePassword(user._id, updatePasswordDto.password);
+  }
+
+  private async hashPassword(password: string) {
+    return bcrypt.hash(password, Number(process.env.PASSWORD_SALT));
+  }
+
+  private async updatePassword(userId: string, newPassword: string) {
+    const newPasswordHash = await this.hashPassword(newPassword);
+    return this.dataServices.users.updatePassword(userId, newPasswordHash);
   }
 }

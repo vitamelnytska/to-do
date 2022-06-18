@@ -5,6 +5,7 @@ import { Task, TaskSchema } from './schemas/tasks.schema';
 import { Module } from '@nestjs/common';
 import { IDataServices } from '../interfaces/idata-services';
 import { User, UserSchema } from './schemas/users.schema';
+import { Token, TokenSchema } from './schemas/token.schema';
 
 @Module({
   providers: [
@@ -23,6 +24,10 @@ import { User, UserSchema } from './schemas/users.schema';
         schema: TaskSchema,
       },
       { name: User.name, schema: UserSchema },
+      {
+        name: Token.name,
+        schema: TokenSchema,
+      },
     ]),
     MongooseModule.forRoot(process.env.DB_URL),
   ],
