@@ -5,8 +5,6 @@
 #env
 src/.env
 
-#auth
-src/auth
 
 # Logs
 logs
