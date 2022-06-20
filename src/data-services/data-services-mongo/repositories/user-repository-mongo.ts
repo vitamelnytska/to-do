@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import {
   AddRoleDto,
   BanUserDto,
-  BaseUserDto,
   UserDto,
 } from '../../../common/models/users/dto';
 import { UpdateUserDto } from '../../../common/models/users/dto/update-user.dto';
