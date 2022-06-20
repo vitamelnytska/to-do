@@ -7,5 +7,6 @@ import { DataServicesModule } from '../../../data-services/data-services.module'
   providers: [TasksService],
   controllers: [TasksController],
   imports: [DataServicesModule],
+  exports: [TasksService],
 })
 export class TasksModule {}

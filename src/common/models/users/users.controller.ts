@@ -16,7 +16,7 @@ import { AddRoleDto, BanUserDto, UserDto } from './dto';
 import { PaginationPipe } from '../../pipes/pagination/pagination.pipe';
 import { PaginationDto } from '../../pipes/pagination/dto/pagination.dto';
 import { ObjectIdValidationPipe } from '../../pipes/object-id/objectid-validation.pipe';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RoleEnum } from './role.enum';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { UpdateOthersPassword } from './dto/update-others-password.dto';
@@ -32,16 +32,7 @@ import { RoleGuard } from '../../../auth/guards/role.guard';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  private static checkIfUserIsAllowed(userId: string, authUser: UserDto): void {
-    if (userId == authUser._id.toString()) {
-      return;
-    }
-    if (!authUser.roles.includes(RoleEnum.Admin)) {
-      throw new ForbiddenException();
-    }
-  }
-
-  @Put('change-password-by-email')
+  @Put('change-password-others')
   @Roles(RoleEnum.Admin)
   async changeOthersPassword(@Body() updatePasswordDto: UpdateOthersPassword) {
     return new ResponseUserDto(
@@ -49,18 +40,19 @@ export class UsersController {
     );
   }
 
-  @Put('change-password')
+  @Put(':id/change-password')
   async changePassword(
     @Body() updatePasswordDto: UpdatePasswordDto,
-    @User() user: UserDto,
+    @Param('id', ObjectIdValidationPipe) id: string,
   ) {
     return new ResponseUserDto(
-      await this.usersService.changePassword(user._id, updatePasswordDto),
+      await this.usersService.changePassword(id, updatePasswordDto),
     );
   }
 
+  @ApiResponse({ status: 200, type: [User] })
   @Get()
-  @UsePipes(new PaginationPipe(0, 10))
+  @UsePipes(new PaginationPipe(0, 50))
   @Roles(RoleEnum.Admin)
   async getAll(@Query() pagination: PaginationDto) {
     const users = await this.usersService.getAll(pagination);
@@ -68,6 +60,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @Roles(RoleEnum.Admin)
   async getById(@Param('id', ObjectIdValidationPipe) id: string) {
     return new ResponseUserDto(await this.usersService.getById(id));
   }
@@ -76,20 +69,15 @@ export class UsersController {
   async update(
     @Body() updateUserDto: UpdateUserDto,
     @Param('id', ObjectIdValidationPipe) id: string,
-    @User() authUser: UserDto,
   ) {
-    UsersController.checkIfUserIsAllowed(id, authUser);
     return new ResponseUserDto(
       await this.usersService.update(id, updateUserDto),
     );
   }
 
   @Delete(':id')
-  async remove(
-    @Param('id', ObjectIdValidationPipe) id: string,
-    @User() authUser: UserDto,
-  ) {
-    UsersController.checkIfUserIsAllowed(id, authUser);
+  @Roles(RoleEnum.Admin)
+  async remove(@Param('id', ObjectIdValidationPipe) id: string) {
     return new ResponseUserDto(await this.usersService.remove(id));
   }
 

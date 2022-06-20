@@ -119,7 +119,7 @@ export class UsersService {
   async changeOthersPassword(updatePasswordDto: UpdateOthersPassword) {
     const user = await this.getByEmail(updatePasswordDto.email);
 
-    if (user.roles.includes(RoleEnum.Admin)) {
+    if (!user.roles.includes(RoleEnum.Admin)) {
       throw new UnauthorizedException('Only admin can change own password');
     }
     await this.tokenService.removeToken(user._id);
