@@ -29,7 +29,7 @@ import { Token, TokenSchema } from './schemas/token.schema';
         schema: TokenSchema,
       },
     ]),
-    MongooseModule.forRoot(process.env.DB_URL),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
   ],
   exports: [IDataServices],
 })
