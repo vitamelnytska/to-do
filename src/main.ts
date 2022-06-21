@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
+  const uri = process.env.MONGODB_URI;
   const PORT = process.env.PORT || 3000;
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
