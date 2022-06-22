@@ -21,6 +21,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
+  "engines": {
+    "node": "16.14.0"
+  },
   "dependencies": {
     "-": "0.0.1",
     "@casl/ability": "^5.4.4",
