@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const uri = process.env.MONGODB_URI;
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 8080;
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
 
